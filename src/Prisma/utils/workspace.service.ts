@@ -44,22 +44,11 @@ export class WorkspacePrismaService {
   }
 
   async updateById(id: string, updateWorkspaceData: Prisma.WorkspaceUpdateInput) {
-    const findWorkspaceById = await this.prisma.workspace.findFirst({
-      where: {
-        id
-      }  
-    })
-
-    const updateData = {
-      ...findWorkspaceById,
-      updateWorkspaceData
-    }
-
     const workspaceUpdate = await this.prisma.workspace.update({
       where: {
         id
       }, 
-      data: updateData
+      data: updateWorkspaceData
     })
 
     return workspaceUpdate;

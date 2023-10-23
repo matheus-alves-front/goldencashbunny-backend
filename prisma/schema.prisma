@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id String @id @default(cuid())
+  username     String   @unique
+  email        String   @unique
+  password     String
+  creationDate DateTime @default(now())
+
+  workspaces Workspace[]
+}
+
+model Workspace {
+  id String @id @default(cuid())
+
+  cnpj              Int
+  companyname       String
+  socialcompanyname String
+
+  account   Account @relation(fields: [accountId], references: [id])
+  accountId String
+
+  clients Client[]
+  spaces  Space[]
+}
+
+model Client {
+  id                String @id @default(cuid())
+  fullname          String
+  cpf               Int
+  cnpj              Int
+  companyname       String
+  socialcompanyname String
+  email             String
+  phone             Int
+  cep               Int
+  address           String
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  workspaceId String
+}
+
+model Space {
+  ref          String   @unique @default(cuid())
+  name         String
+  creationDate DateTime @default(now())
+
+  workspace   Workspace @relation(fields: [workspaceId], references: [id])
+  workspaceId String
+
+  tables SpaceTable[]
+
+  @@id([workspaceId, name])
+}
+
+model SpaceTable {
+  ref          String   @unique @default(cuid())
+  name         String
+  creationDate DateTime @default(now())
+
+  space    Space  @relation(fields: [spaceRef], references: [ref])
+  spaceRef String
+
+  tableColumns TableColumn[]
+  tableData    TableData[]
+
+  @@id([spaceRef, name])
+}
+
+model TableColumn {
+  columnName String
+  columnType String
+
+  spaceTable    SpaceTable @relation(fields: [spaceTableRef], references: [ref])
+  spaceTableRef String
+
+  @@id([spaceTableRef, columnName])
+}
+
+model TableData {
+  ref        String @unique @default(cuid())
+  columnName String
+  value      String
+  type       String
+
+  creationDate  DateTime
+  spaceTable    SpaceTable @relation(fields: [spaceTableRef], references: [ref])
+  spaceTableRef String
+
+  @@id([spaceTableRef, ref])
+}

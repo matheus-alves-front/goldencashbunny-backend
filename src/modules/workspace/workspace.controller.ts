@@ -20,23 +20,31 @@ export class WorkspaceController {
 
   @Get()
   findAll(@Headers() headers: GoldenHeadersType) {
-    console.log("headers", headers.xgoldentoken)
-
-    return this.workspaceCrud.findAll(headers.xgoldentoken);
+    return this.workspaceCrud.findAll(headers);
   }
 
   @Get('/id/:id')
-  findById(@Param('id') id: string) {
-    return this.workspaceCrud.findById(id);
+  findById(
+    @Param('id') id: string,
+    @Headers() headers: GoldenHeadersType
+  ) {
+    return this.workspaceCrud.findById(id, headers);
   }
 
   @Patch('/id/:id')
-  update(@Param('id') id: string, @Body() updateAccountDto: Prisma.WorkspaceUpdateInput) {
-    return this.workspaceCrud.update(id, updateAccountDto);
+  update(
+    @Headers() headers: GoldenHeadersType,
+    @Param('id') id: string, 
+    @Body() updateAccountDto: Prisma.WorkspaceUpdateInput
+  ) {
+    return this.workspaceCrud.update(id, updateAccountDto, headers);
   }
 
   @Delete('/id/:id')
-  remove(@Param('id') id: string) {
-    return this.workspaceCrud.remove(id);
+  remove(
+    @Headers() headers: GoldenHeadersType,
+    @Param('id') id: string,
+  ) {
+    return this.workspaceCrud.remove(id, headers);
   }
 }

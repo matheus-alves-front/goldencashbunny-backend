@@ -36,13 +36,45 @@ export class WorkspaceCrud {
     return createWorkspaceByAccountId
   }
 
-  async findAll(accountId: string) {
-    const findWorkspaceByAccountId = await this.prismaWorkspace.findAllByAccountId(accountId)
+  async findAll(headers: GoldenHeadersType) {
+    const { xgoldentoken } = headers
+
+    if (!xgoldentoken) {
+      return {
+        error: 'Token not found'
+      }
+    }
+
+    const getAccount = await this.prismaAccount.findById(xgoldentoken)
+
+    if (!getAccount) {
+      return {
+        error: 'Account by id not found'
+      }
+    }
+
+    const findWorkspaceByAccountId = await this.prismaWorkspace.findAllByAccountId(getAccount.id)
     
     return findWorkspaceByAccountId
   }
 
-  async findById(id: string) {
+  async findById(id: string, headers: GoldenHeadersType) {
+    const { xgoldentoken } = headers
+
+    if (!xgoldentoken) {
+      return {
+        error: 'Token not found'
+      }
+    }
+
+    const getAccount = await this.prismaAccount.findById(xgoldentoken)
+
+    if (!getAccount) {
+      return {
+        error: 'Account by id not found'
+      }
+    }
+
     const findWorkspaceById = await this.prismaWorkspace.findById(id)
 
     if (!findWorkspaceById) {
@@ -54,7 +86,23 @@ export class WorkspaceCrud {
     return findWorkspaceById
   }
 
-  async update(id: string, updateWorkspaceDto: Prisma.WorkspaceUpdateInput) {
+  async update(id: string, updateWorkspaceDto: Prisma.WorkspaceUpdateInput, headers: GoldenHeadersType) {
+    const { xgoldentoken } = headers
+
+    if (!xgoldentoken) {
+      return {
+        error: 'Token not found'
+      }
+    }
+
+    const getAccount = await this.prismaAccount.findById(xgoldentoken)
+
+    if (!getAccount) {
+      return {
+        error: 'Account by id not found'
+      }
+    }
+
     const findWorkspaceById = await this.prismaWorkspace.findById(id)
 
     if (!findWorkspaceById) {
@@ -68,7 +116,23 @@ export class WorkspaceCrud {
     return workspaceUpdate
   }
 
-  async remove(id: string) {
+  async remove(id: string, headers: GoldenHeadersType) {
+    const { xgoldentoken } = headers
+
+    if (!xgoldentoken) {
+      return {
+        error: 'Token not found'
+      }
+    }
+
+    const getAccount = await this.prismaAccount.findById(xgoldentoken)
+
+    if (!getAccount) {
+      return {
+        error: 'Account by id not found'
+      }
+    }
+
    const findWorkspaceById = await this.prismaWorkspace.findById(id)
 
     if (!findWorkspaceById) {

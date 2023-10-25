@@ -9,6 +9,7 @@ export class ClientPrismaService {
   ) {}
 
   async create(client: Prisma.ClientCreateInput, workspaceId: string) {
+    console.log("workspaceId", workspaceId)
     const createClientToWorkspace = await this.prisma.client.create({
       data: {
         ...client,
@@ -34,7 +35,7 @@ export class ClientPrismaService {
   }
 
   async findById(id: string) {
-    const findClientById = await this.prisma.workspace.findFirst({
+    const findClientById = await this.prisma.client.findFirst({
       where: {
         id
       }  
@@ -44,22 +45,11 @@ export class ClientPrismaService {
   }
 
   async updateById(id: string, updateClientData: Prisma.ClientUpdateInput) {
-    const findClientById = await this.prisma.client.findFirst({
-      where: {
-        id
-      }  
-    })
-
-    const updateData = {
-      ...findClientById,
-      updateClientData
-    }
-
     const clientUpdate = await this.prisma.client.update({
       where: {
         id
       }, 
-      data: updateData
+      data: updateClientData
     })
 
     return clientUpdate;

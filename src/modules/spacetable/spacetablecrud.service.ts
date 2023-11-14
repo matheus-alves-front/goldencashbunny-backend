@@ -8,6 +8,16 @@ interface GoldenHeadersType extends Headers {
   xgoldenworkspace: string
 }
 
+interface CreateSpaceBodyWithData {
+  spaceRef: string,
+  data: Prisma.SpaceTableCreateInput
+}
+
+interface UpdateSpaceBodyWithData {
+  spaceRef: string,
+  data: Prisma.SpaceTableUpdateInput
+}
+
 @Injectable()
 export class SpaceTableService {
   constructor(
@@ -16,10 +26,14 @@ export class SpaceTableService {
   ) {}
 
   async create(
-    createSpaceTableDto: Prisma.SpaceTableCreateInput,
+    createSpaceTableDto: CreateSpaceBodyWithData,
     headers: GoldenHeadersType,
-    spaceRef: string
   ) {
+    const { 
+      spaceRef,
+      data 
+    } = createSpaceTableDto
+
     const spaceExists = await this.prismaSpace.findByRef(spaceRef)
 
     if (!spaceExists) {
@@ -28,9 +42,9 @@ export class SpaceTableService {
       }
     }
 
-    const createSpace = await this.prismaSpaceTable.create(createSpaceTableDto, spaceExists.ref)
+    const createSpaceTable = await this.prismaSpaceTable.create(data, spaceExists.ref)
 
-    return createSpace;
+    return createSpaceTable;
   }
 
     
@@ -38,43 +52,46 @@ export class SpaceTableService {
     headers: GoldenHeadersType,
     spaceRef: string
   ) {
-    const getAllSpacesByWorkspace = await this.prismaSpaceTable.findAllBySpaceTableByRef(spaceRef)
+    const getAllSpacesTableFromSpaceRef = await this.prismaSpaceTable.findAllBySpaceTableByRef(spaceRef)
 
-    return getAllSpacesByWorkspace;
+    return getAllSpacesTableFromSpaceRef;
   }
 
   async findOne(
     ref: string,
     headers: GoldenHeadersType
   ) {
-    const getSpaceByRef = await this.prismaSpaceTable.findByRef(ref)
+    const getSpaceTableByRef = await this.prismaSpaceTable.findByRef(ref)
 
-    if (!getSpaceByRef) {
+    if (!getSpaceTableByRef) {
       return {
-        error: 'Space not found by ref'
+        error: 'Space Table not found by ref'
       }
     }
     
-    return getSpaceByRef;
+    return getSpaceTableByRef;
 
   }
 
   async update(
     ref: string, 
-    updateSpaceTableDto: Prisma.SpaceTableUpdateInput,
+    updateSpaceTableDto: UpdateSpaceBodyWithData,
     headers: GoldenHeadersType
   ) {
+    const { 
+      spaceRef,
+      data 
+    } = updateSpaceTableDto
 
+    const getSpaceTableByRef = await this.prismaSpaceTable.findByRef(ref)
 
-    const getSpaceByRef = await this.prismaSpaceTable.findByRef(ref)
-
-    if (!getSpaceByRef) {
+    if (!getSpaceTableByRef) {
       return {
-        error: 'Client Id not found'
+        error: 'Space Table Id not found'
       }
     }
 
-    const updateSpaceById = await this.prismaSpaceTable.updateByRef(getSpaceByRef.ref, updateSpaceTableDto)
+    const updateSpaceById = await this.prismaSpaceTable.updateByRef(getSpaceTableByRef.ref, data)
     
     return updateSpaceById;
   }
@@ -83,33 +100,16 @@ export class SpaceTableService {
     ref: string,
     headers: GoldenHeadersType
   ) {
-    const { 
-      xgoldentoken,
-      xgoldenworkspace
-    } = headers
+    const getSpaceTableByRef = await this.prismaSpaceTable.findByRef(ref)
 
-    if (!xgoldentoken) {
-      return {
-        error: 'xgoldentoken missing'
-      }
-    }
-
-    if (!xgoldenworkspace) {
-      return {
-        error: 'xgoldenworkspace missing'
-      }
-    }
-
-    const getSpaceByRef = await this.prismaSpaceTable.findByRef(ref)
-
-    if (!getSpaceByRef) {
+    if (!getSpaceTableByRef) {
       return {
         error: 'Space Table Ref not found'
       }
     }
 
-    await this.prismaSpaceTable.removeByRef(getSpaceByRef.ref)
+    await this.prismaSpaceTable.removeByRef(getSpaceTableByRef.ref)
     
-    return `${getSpaceByRef.name} Deleted`;
+    return `${getSpaceTableByRef.name} Deleted`;
   }
 }

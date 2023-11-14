@@ -94,7 +94,7 @@ model TableData {
   value      String
   type       String
 
-  creationDate  DateTime
+  creationDate  DateTime @default(now())
   spaceTable    SpaceTable @relation(fields: [spaceTableRef], references: [ref])
   spaceTableRef String
 

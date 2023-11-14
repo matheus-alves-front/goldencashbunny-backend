@@ -7,29 +7,40 @@ interface GoldenHeadersType extends Headers {
   xgoldenworkspace: string
 }
 
-@Controller('space/:spaceRef/table')
+interface SpaceRefBody {
+  spaceRef: string,
+}
+interface CreateSpaceBodyWithData {
+  spaceRef: string,
+  data: Prisma.SpaceTableCreateInput
+}
+
+interface UpdateSpaceBodyWithData {
+  spaceRef: string,
+  data: Prisma.SpaceTableUpdateInput
+}
+
+@Controller('table')
 export class SpaceTableController {
   constructor(private readonly spacetableService: SpaceTableService) {}
 
   @Post()
   create(
-    @Param('spaceRef') spaceRef: string,
-    @Body() createSpaceDto: Prisma.SpaceTableCreateInput,
+    @Body() createSpaceTableDto: CreateSpaceBodyWithData,
     @Headers() headers: GoldenHeadersType
   ) {
-    console.log(spaceRef)
-    return this.spacetableService.create(createSpaceDto, headers, spaceRef);
+    return this.spacetableService.create(createSpaceTableDto, headers);
   }
 
   @Get()
   findAll(
     @Headers() headers: GoldenHeadersType,
-    @Param('spaceRef') spaceRef: string,
+    @Body() body: SpaceRefBody,
   ) {
-    return this.spacetableService.findAll(headers, spaceRef);
+    return this.spacetableService.findAll(headers, body.spaceRef);
   }
 
-  @Get('ref/:ref')
+  @Get(':ref')
   findOne(
     @Param('ref') ref: string,
     @Headers() headers: GoldenHeadersType
@@ -37,16 +48,16 @@ export class SpaceTableController {
     return this.spacetableService.findOne(ref, headers);
   }
 
-  @Patch('ref/:ref')
+  @Patch(':ref')
   update(
     @Param('ref') ref: string, 
-    @Body() updateSpaceDto: Prisma.SpaceTableUpdateInput,
+    @Body() updateSpaceTableDto: UpdateSpaceBodyWithData,
     @Headers() headers: GoldenHeadersType
   ) {
-    return this.spacetableService.update(ref, updateSpaceDto, headers);
+    return this.spacetableService.update(ref, updateSpaceTableDto, headers);
   }
 
-  @Delete('ref/:ref')
+  @Delete(':ref')
   remove(
     @Param('ref') ref: string,
     @Headers() headers: GoldenHeadersType

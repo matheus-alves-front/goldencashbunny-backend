@@ -43,6 +43,20 @@ export class SpacePrismaService {
     return findSpaceById;
   }
 
+  async findById(workspaceId: string, ref: string) {
+    const findSpaceById = await this.prisma.space.findUnique({
+      where: {
+        workspaceId_ref: {
+          workspaceId,
+          ref
+        }
+      }  
+    })
+
+    return findSpaceById;
+  }
+
+
   async updateByRef(ref: string, updateSpaceData: Prisma.SpaceUpdateInput) {
     const spaceUpdate = await this.prisma.space.update({
       where: {

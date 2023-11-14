@@ -60,7 +60,7 @@ model Space {
 
   tables SpaceTable[]
 
-  @@id([workspaceId, name])
+  @@id([workspaceId, ref])
 }
 
 model SpaceTable {
@@ -74,17 +74,18 @@ model SpaceTable {
   tableColumns TableColumn[]
   tableData    TableData[]
 
-  @@id([spaceRef, name])
+  @@id([spaceRef, ref])
 }
 
 model TableColumn {
+  ref          String   @unique @default(cuid())
   columnName String
   columnType String
 
   spaceTable    SpaceTable @relation(fields: [spaceTableRef], references: [ref])
   spaceTableRef String
 
-  @@id([spaceTableRef, columnName])
+  @@id([spaceTableRef, ref])
 }
 
 model TableData {

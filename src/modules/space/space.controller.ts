@@ -1,34 +1,52 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Headers } from '@nestjs/common';
 import { SpaceService } from './spacecrud.service';
-import { CreateSpaceDto } from './dto/create-space.dto';
-import { UpdateSpaceDto } from './dto/update-space.dto';
+import { Prisma } from '@prisma/client';
 
+interface GoldenHeadersType extends Headers {
+  xgoldentoken: string,
+  xgoldenworkspace: string
+}
 @Controller('space')
 export class SpaceController {
   constructor(private readonly spaceService: SpaceService) {}
 
   @Post()
-  create(@Body() createSpaceDto: CreateSpaceDto) {
-    return this.spaceService.create(createSpaceDto);
+  create(
+    @Body() createSpaceDto: Prisma.SpaceCreateInput,
+    @Headers() headers: GoldenHeadersType
+  ) {
+    return this.spaceService.create(createSpaceDto, headers);
   }
 
   @Get()
-  findAll() {
-    return this.spaceService.findAll();
+  findAll(
+    @Headers() headers: GoldenHeadersType
+  ) {
+    return this.spaceService.findAll(headers);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.spaceService.findOne(+id);
+  @Get(':ref')
+  findOne(
+    @Param('ref') ref: string,
+    @Headers() headers: GoldenHeadersType
+  ) {
+    return this.spaceService.findOne(ref, headers);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSpaceDto: UpdateSpaceDto) {
-    return this.spaceService.update(+id, updateSpaceDto);
+  @Patch(':ref')
+  update(
+    @Param('ref') ref: string, 
+    @Body() updateSpaceDto: Prisma.SpaceUpdateInput,
+    @Headers() headers: GoldenHeadersType
+  ) {
+    return this.spaceService.update(ref, updateSpaceDto, headers);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.spaceService.remove(+id);
+  @Delete(':ref')
+  remove(
+    @Param('ref') ref: string,
+    @Headers() headers: GoldenHeadersType
+  ) {
+    return this.spaceService.remove(ref, headers);
   }
 }

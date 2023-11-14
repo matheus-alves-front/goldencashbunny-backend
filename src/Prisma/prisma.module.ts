@@ -4,6 +4,7 @@ import { AccountPrismaService } from './utils/account.service';
 import { WorkspacePrismaService } from './utils/workspace.service';
 import { ClientPrismaService } from './utils/client.service';
 import { SpacePrismaService } from './utils/space.service';
+import { SpaceTablePrismaService } from './utils/spacetable.service';
 
 @Module({
   providers: [
@@ -11,13 +12,15 @@ import { SpacePrismaService } from './utils/space.service';
     AccountPrismaService,
     WorkspacePrismaService,
     ClientPrismaService,
-    SpacePrismaService
+    SpacePrismaService,
+    SpaceTablePrismaService
   ],
   exports: [
     AccountPrismaService,
     WorkspacePrismaService,
     ClientPrismaService,
-    SpacePrismaService
+    SpacePrismaService,
+    SpaceTablePrismaService
   ]
 })
 export class PrismaModule {}

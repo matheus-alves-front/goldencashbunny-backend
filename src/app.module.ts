@@ -5,6 +5,7 @@ import { AccountModule } from './modules/account/account.module';
 import { PrismaModule } from './Prisma/prisma.module';
 import { WorkspaceModule } from './modules/workspace/workspace.module';
 import { SpaceModule } from './modules/space/space.module';
+import { SpaceTableModule } from './modules/spacetable/spacetable.module';
 import { ClientsModule } from './modules/clients/clients.module';
 
 @Module({
@@ -13,7 +14,8 @@ import { ClientsModule } from './modules/clients/clients.module';
     AccountModule,
     WorkspaceModule,
     SpaceModule,
-    ClientsModule
+    ClientsModule,
+    SpaceTableModule
   ],
   controllers: [AppController],
   providers: [AppService],

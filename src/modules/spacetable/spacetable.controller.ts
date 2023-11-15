@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Headers, Query } from '@nestjs/common';
 import { SpaceTableService } from './spacetablecrud.service';
 import { Prisma } from '@prisma/client';
 
@@ -7,7 +7,7 @@ interface GoldenHeadersType extends Headers {
   xgoldenworkspace: string
 }
 
-interface SpaceRefBody {
+interface SpaceRefQuery {
   spaceRef: string,
 }
 interface CreateSpaceBodyWithData {
@@ -35,9 +35,9 @@ export class SpaceTableController {
   @Get()
   findAll(
     @Headers() headers: GoldenHeadersType,
-    @Body() body: SpaceRefBody,
+    @Query() queryString: SpaceRefQuery,
   ) {
-    return this.spacetableService.findAll(headers, body.spaceRef);
+    return this.spacetableService.findAll(headers, queryString.spaceRef);
   }
 
   @Get(':ref')
